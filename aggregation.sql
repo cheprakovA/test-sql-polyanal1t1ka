@@ -1,3 +1,46 @@
+CREATE TABLE IF NOT EXISTS departments (
+    filial_id int8,
+    department_id int8,
+    dep_chif_id int8
+);
+
+
+CREATE TABLE IF NOT EXISTS items (
+    id text,
+    name text,
+    price int8,
+    sdate timestamp,
+    edate timestamp,
+    is_actual int8
+);
+
+
+CREATE TABLE IF NOT EXISTS sales (
+    sale_date timestamp,
+    salesman_id int8,
+    item_id text,
+    quantity int8,
+    final_price int8
+);
+
+
+CREATE TABLE IF NOT EXISTS sellers (
+    id int8,
+    fio text,
+    department_id int8
+);
+
+
+CREATE TABLE IF NOT EXISTS services (
+	id text,
+	name text,
+	price int8,
+	sdate timestamp,
+	edate timestamp,
+	is_actual int8
+);
+
+
 WITH T AS (
 	SELECT
 		sales.salesman_id,
@@ -21,7 +64,9 @@ WITH T AS (
 		SELECT
 			*
 		FROM
-			items) tmp1 ON tmp1.id = sales.item_id
+			items) tmp1 ON (tmp1.id = sales.item_id
+			AND sales.sale_date BETWEEN tmp1.sdate
+			AND tmp1.edate)
 )
 SELECT
 	period_type,
